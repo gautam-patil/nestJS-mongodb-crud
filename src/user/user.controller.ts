@@ -1,13 +1,17 @@
 import { Body, Controller, Delete, Get, HttpStatus, NotFoundException, Param, Post, Put, Query, Res } from '@nestjs/common';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateUserDTO, CreateVendorDTO } from './dto';
 import { UserService } from "./user.service";
 
+@ApiTags('user')
 @Controller('user')
 export class UserController {
 
 	constructor(private readonly UserService: UserService){}
 
 	@Post('/create')
+	@ApiResponse({ status: 201, description: 'The record has been successfully created.'})
+	@ApiResponse({ status: 403, description: 'Forbidden.'})
 	async addUser(@Res() res, @Body() CreateUserDTO: CreateUserDTO){
 
 		const user = await this.UserService.create(CreateUserDTO);
@@ -27,6 +31,8 @@ export class UserController {
 	}
 
 	@Put('/update/:id')
+	@ApiResponse({ status: 201, description: 'Update User'})
+	@ApiResponse({ status: 404, description: 'Id not exist'})
 	async update(@Res() res, @Param('id') id: string, @Body() CreateUserDTO: CreateUserDTO){
 		
 		try{
@@ -42,8 +48,8 @@ export class UserController {
 			})
 		}catch(error){
 
-			return res.status(HttpStatus.BAD_REQUEST).json({
-				message: error
+			return res.status(HttpStatus.NOT_FOUND).json({
+				message: error?.message
 			})
 		}
 	}
