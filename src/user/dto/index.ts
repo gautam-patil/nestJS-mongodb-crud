@@ -1,2 +1,2 @@
 export * from "./user.dto";
-export * from "./vendor.dto";
+export * from "./update-user.dto"
